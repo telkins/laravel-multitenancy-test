@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0c0458cd7bf0aa562d0e4f09f6d9d59",
+    "content-hash": "32d230193b0a9a481e7522c4df9b4b41",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2109,6 +2109,75 @@
                 }
             ],
             "time": "2020-08-18T17:17:46+00:00"
+        },
+        {
+            "name": "spatie/laravel-multitenancy",
+            "version": "1.6.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-multitenancy.git",
+                "reference": "85c4e5c111c400f0db849302d56c22fbac21e9ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-multitenancy/zipball/85c4e5c111c400f0db849302d56c22fbac21e9ce",
+                "reference": "85c4e5c111c400f0db849302d56c22fbac21e9ce",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "orchestra/testbench": "^5.0",
+                "phpunit/phpunit": "^9.0",
+                "spatie/valuestore": "^1.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Multitenancy\\MultitenancyServiceProvider"
+                    ],
+                    "aliases": {
+                        "Multitenancy": "Spatie\\Multitenancy\\MultitenancyFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Multitenancy\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "http://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Make your Laravel app usable by multiple tenants",
+            "homepage": "https://github.com/spatie/laravel-multitenancy",
+            "keywords": [
+                "laravel-multitenancy",
+                "spatie"
+            ],
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-08-24T10:19:07+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
