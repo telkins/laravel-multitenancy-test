@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Spatie\Multitenancy\Jobs\NotTenantAware;
+use Spatie\Multitenancy\Models\Tenant;
 
 class ProvisionNewTenantDatabase implements ShouldQueue, NotTenantAware
 {
