@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
@@ -62,6 +63,10 @@ class ExampleTest extends TestCase
 
         $anotherTenant = factory(Tenant::class)->create();
 
-        $this->assertTrue(true);
+        $tenant->makeCurrent();
+
+        $user = factory(User::class)->create();
+
+        $this->assertDatabaseCount('users', 1, 'tenant');
     }
 }
