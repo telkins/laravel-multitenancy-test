@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Spatie\Multitenancy\Jobs\NotTenantAware;
 use Spatie\Multitenancy\Models\Tenant;
@@ -40,5 +41,10 @@ class ProvisionNewTenantDatabase implements ShouldQueue, NotTenantAware
 
         DB::connection('landlord')
             ->statement("CREATE DATABASE IF NOT EXISTS {$databaseName} CHARACTER SET {$characterSet} COLLATE {$collation}");
+
+        Artisan::call('tenants:artisan', [
+            'artisanCommand' => 'migrate --database=tenant --force',
+            '--tenant' => $this->tenant->id,
+        ]);
     }
 }
