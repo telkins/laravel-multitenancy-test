@@ -15,6 +15,9 @@ class TenantObserver
      */
     public function created(Tenant $tenant)
     {
+        $tenant->database = "tenant_{$tenant->id}";
+        $tenant->save();
+
         ProvisionNewTenantDatabase::dispatch($tenant);
     }
 
