@@ -37,7 +37,7 @@ class ProvisionNewTenantDatabase implements ShouldQueue, NotTenantAware
     {
         $characterSet = config('database.connections.tenant.charset', 'utf8mb4');
         $collation = config('database.connections.tenant.collation', 'utf8mb4_0900_ai_ci');
-        $databaseName = "tenant_{$this->tenant->id}";
+        $databaseName = $this->tenant->database;
 
         DB::connection('landlord')
             ->statement("CREATE DATABASE IF NOT EXISTS {$databaseName} CHARACTER SET {$characterSet} COLLATE {$collation}");
