@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Spatie\Multitenancy\Concerns\UsesMultitenancyConfig;
 use Spatie\Multitenancy\Models\Tenant;
+use Tests\CreatesApplication;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -15,15 +16,26 @@ class ExampleTest extends TestCase
     use RefreshDatabase; // Overridden refreshTestDatabase() method below.  See note...
     use UsesMultitenancyConfig;
 
-    protected $game;
+    protected $tenant;
+    protected $anotherTenant;
 
-    // protected function connectionsToTransact()
-    // {
-    //     return [
-    //         $this->landlordDatabaseConnectionName(),
-    //         $this->tenantDatabaseConnectionName(),
-    //     ];
-    // }
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->assertSame(0, Tenant::count(), 'The landlord.tenants table should be empty...right...?');
+
+        $this->tenant = factory(Tenant::class)->create();
+        $this->anotherTenant = factory(Tenant::class)->create();
+    }
+
+    protected function connectionsToTransact()
+    {
+        return [
+            $this->landlordDatabaseConnectionName(),
+            // $this->tenantDatabaseConnectionName(),
+        ];
+    }
 
     /**
      * Refresh a conventional test database.
@@ -37,16 +49,18 @@ class ExampleTest extends TestCase
     protected function refreshTestDatabase()
     {
         if (! RefreshDatabaseState::$migrated) {
-            // First landlord...
+            // First tenants...
+            Tenant::all()->eachCurrent(function ($tenant) {
+                $this->artisan('migrate:fresh --database=tenant');
+            });
+
+            // Then landlord...
             $this->artisan('migrate:fresh', [
                 '--drop-views' => $this->shouldDropViews(),
                 '--drop-types' => $this->shouldDropTypes(),
                 '--path' => 'database/migrations/landlord', // <-- these two lines are added...
                 '--database' => 'landlord',                 // <-- these two lines are added...
             ]);
-
-            // Then tenants...?
-            // ...
 
             $this->app[Kernel::class]->setArtisan(null);
 
@@ -59,14 +73,30 @@ class ExampleTest extends TestCase
     /** @test */
     public function it_works()
     {
-        $tenant = factory(Tenant::class)->create();
+        $this->tenant->makeCurrent();
+        $user = factory(User::class)->create(['email' => 'me@mydomain.com']);
+        $this->assertDatabaseCount('users', 1, 'tenant');
 
-        $anotherTenant = factory(Tenant::class)->create();
+        $this->anotherTenant->makeCurrent();
+        $user = factory(User::class)->create(['email' => 'me@mydomain.com']);
+        $this->assertDatabaseCount('users', 1, 'tenant');
 
-        $tenant->makeCurrent();
+        $this->tenant->makeCurrent();
+        $this->assertDatabaseCount('users', 1, 'tenant');
+    }
 
-        $user = factory(User::class)->create();
+    /** @test */
+    public function it_still_works()
+    {
+        $this->tenant->makeCurrent();
+        $user = factory(User::class)->create(['email' => 'me@mydomain.com']);
+        $this->assertDatabaseCount('users', 1, 'tenant');
 
+        $this->anotherTenant->makeCurrent();
+        $user = factory(User::class)->create(['email' => 'me@mydomain.com']);
+        $this->assertDatabaseCount('users', 1, 'tenant');
+
+        $this->tenant->makeCurrent();
         $this->assertDatabaseCount('users', 1, 'tenant');
     }
 }
